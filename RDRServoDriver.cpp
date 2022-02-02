@@ -105,7 +105,10 @@ void RDRServoDriver::begin(uint8_t prescale) {
   // set the default internal frequency
   setOscillatorFrequency(FREQUENCY_OSCILLATOR);
 
-  for (uint8_t i = m_baseServo; i < m_numServos; ++i)
+  // Switch to Fast Plus I2C (1MHz)
+  m_i2c->setClock(1000000);
+
+  for (uint8_t i = m_baseServo; i < m_baseServo + m_numServos; ++i)
   {
     setPWM(i, 4096, 0);
   }
