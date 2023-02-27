@@ -276,8 +276,15 @@ void RDRServoDriver::commitPWM() {
     m_i2c->beginTransmission(m_i2cAddr);
     m_i2c->write(PCA9685_LED0_ON_L + 4 * m_baseServo);
     m_i2c->write(m_pwmRegisterState, m_numServos * 4);
-    m_i2c->endTransmission();
-
+    if (m_i2c->endTransmission() != 0) {
+#ifdef ENABLE_DEBUG_OUTPUT		
+	  Serial.print("I2C to servo failed ");
+	  Serial.println(m_i2cAddr);
+#endif
+      // Reset the i2c interface	  
+	  i2c_init(i2c0, 1000000);
+    }
+    
     m_bAnyChanged = false;
   }
 }
